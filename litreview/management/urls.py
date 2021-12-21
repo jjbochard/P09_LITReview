@@ -7,6 +7,6 @@ urlpatterns = [
     path(
         "ticket/create/",
         CreateTicketView.as_view(),
-        name="timeoff_create",
+        name="ticket_create",
     ),
 ]
