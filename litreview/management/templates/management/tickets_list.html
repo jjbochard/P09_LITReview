@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+
+{% block bootstrap5_content %}
+<div class="container">
+    <h1>{% block title %}(no title){% endblock %}</h1>
+
+    <p>
+        <a href="{% url 'index' %}">home</a>
+    </p>
+    {% if tickets %}
+    {% for ticket in tickets %}
+    {{ ticket.time_created }}<br>
+    {{ ticket.title }}<br>
+    {{ ticket.description }}<br>
+    {{ ticket.user }}<br>
+    {{ ticket.image }}<br>
+    <br>
+    {% endfor %}
+    {% else %}
+    <p>No tickets are available.</p>
+    {% endif %}
+    {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
+
+    {% block content %}(no content){% endblock %}
+</div>
+
+{% endblock %}
