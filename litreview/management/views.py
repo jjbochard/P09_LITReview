@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from .forms import TicketForm
 from .models import Ticket
@@ -67,3 +67,12 @@ class EditTicketView(UpdateView):
     #     kwargs.update({"user": self.request.user.id})
     #     print(kwargs)
     #     return kwargs
+
+
+class DeleteTicketView(DeleteView):
+    template_name = "management/ticket_delete.html"
+    model = Ticket
+
+    def get_success_url(self):
+
+        return reverse_lazy("index")
