@@ -2,6 +2,7 @@ from django.urls import path
 
 from .views import (
     CreateReviewView,
+    CreateTicketAndReviewView,
     CreateTicketView,
     DeleteReviewView,
     DeleteTicketView,
@@ -43,5 +44,10 @@ urlpatterns = [
         "review/delete/<int:pk>/",
         DeleteReviewView.as_view(),
         name="review_delete",
+    ),
+    path(
+        "ticket_review/create",
+        CreateTicketAndReviewView.as_view(),
+        name="create_ticket_review",
     ),
 ]

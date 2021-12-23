@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from .forms import ReviewForm, TicketForm
@@ -113,7 +114,6 @@ class CreateReviewView(CreateView):
         context = super().get_context_data(**kwargs)
 
         context["ticket"] = Ticket.objects.get(pk=self.kwargs["pk"])
-        print(context)
         return context
 
 
@@ -147,3 +147,33 @@ class DeleteReviewView(DeleteView):
     def get_success_url(self):
 
         return reverse_lazy("reviews_list")
+
+
+class CreateTicketAndReviewView(TemplateView):
+
+    # Initalize our two forms here with separate prefixes
+    template_name = "management/reviews/create_ticket_and_review.html"
+
+    def get_success_url(self):
+        return reverse_lazy("reviews_list")
+
+    def post(self, request, *args, **kwargs):
+        form = TicketForm(request.POST, request.FILES, prefix="ticket")
+        sub_form = ReviewForm(request.POST, prefix="review")
+        form.instance.user = self.request.user
+
+        if form.is_valid() and sub_form.is_valid():
+            form.instance.user = self.request.user
+            sub_form.instance.user = self.request.user
+
+            review = sub_form.save(commit=False)
+            review.ticket = form.save()
+            review.save()
+
+        return redirect(self.get_success_url())
+
+    def get_context_data(self, **kwargs):
+        form = TicketForm(prefix="ticket")
+        sub_form = ReviewForm(prefix="review")
+
+        return {"form": form, "sub_form": sub_form}
