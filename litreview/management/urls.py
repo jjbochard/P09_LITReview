@@ -1,6 +1,15 @@
 from django.urls import path
 
-from .views import CreateTicketView, DeleteTicketView, EditTicketView, index
+from .views import (
+    CreateReviewView,
+    CreateTicketView,
+    DeleteReviewView,
+    DeleteTicketView,
+    EditReviewView,
+    EditTicketView,
+    ReviewList,
+    index,
+)
 
 urlpatterns = [
     path("", index, name="index"),
@@ -18,5 +27,21 @@ urlpatterns = [
         "ticket/delete/<int:pk>/",
         DeleteTicketView.as_view(),
         name="ticket_delete",
+    ),
+    path(
+        "review/create/<int:pk>",
+        CreateReviewView.as_view(),
+        name="review_create",
+    ),
+    path("reviews/list/", ReviewList, name="reviews_list"),
+    path(
+        "review/edit/<int:pk>/",
+        EditReviewView.as_view(),
+        name="review_edit",
+    ),
+    path(
+        "review/delete/<int:pk>/",
+        DeleteReviewView.as_view(),
+        name="review_delete",
     ),
 ]
