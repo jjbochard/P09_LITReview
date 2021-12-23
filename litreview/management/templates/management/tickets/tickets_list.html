@@ -17,6 +17,7 @@
     {{ ticket.image }}<br>
     <a href="{% url 'ticket_edit' pk=ticket.id %}" class=" btn btn-secondary">Modifier</a>
     <a href="{% url 'ticket_delete' pk=ticket.id %}" class="btn btn-secondary">Supprimer</a>
+    <a href="{% url 'review_create' pk=ticket.id%}" class=" btn btn-secondary">Critique</a>
 
     <br>
     {% endfor %}
