@@ -4,7 +4,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from .forms import ReviewForm, TicketForm
-from .models import Review, Ticket
+from .models import Review, Ticket, UserFollows
 
 
 def index(request):
@@ -17,6 +17,16 @@ def ReviewList(request):
     reviews = Review.objects.all()
     context = {"reviews": reviews}
     return render(request, "management/reviews/reviews_list.html", context)
+
+
+def UsersList(request):
+    users = UserFollows.objects.all()
+    current_user = request.user
+    context = {
+        "users": users,
+        "current_user": current_user,
+    }
+    return render(request, "management/users_list.html", context)
 
 
 class CreateTicketView(CreateView):
@@ -177,3 +187,11 @@ class CreateTicketAndReviewView(TemplateView):
         sub_form = ReviewForm(prefix="review")
 
         return {"form": form, "sub_form": sub_form}
+
+
+class DeleteUserFollowView(DeleteView):
+    template_name = "management/user_follow_delete.html"
+    model = UserFollows
+
+    def get_success_url(self):
+        return reverse_lazy("users_list")

@@ -6,9 +6,11 @@ from .views import (
     CreateTicketView,
     DeleteReviewView,
     DeleteTicketView,
+    DeleteUserFollowView,
     EditReviewView,
     EditTicketView,
     ReviewList,
+    UsersList,
     index,
 )
 
@@ -49,5 +51,15 @@ urlpatterns = [
         "ticket_review/create",
         CreateTicketAndReviewView.as_view(),
         name="create_ticket_review",
+    ),
+    path(
+        "users/list",
+        UsersList,
+        name="users_list",
+    ),
+    path(
+        "user/follow/<int:pk>/",
+        DeleteUserFollowView.as_view(),
+        name="userfollows_delete",
     ),
 ]
