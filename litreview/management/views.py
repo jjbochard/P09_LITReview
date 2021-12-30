@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
@@ -7,18 +9,21 @@ from .forms import ReviewForm, TicketForm
 from .models import Review, Ticket, UserFollows
 
 
+@login_required
 def index(request):
     tickets = Ticket.objects.all()
     context = {"tickets": tickets}
     return render(request, "management/tickets/tickets_list.html", context)
 
 
+@login_required
 def ReviewList(request):
     reviews = Review.objects.all()
     context = {"reviews": reviews}
     return render(request, "management/reviews/reviews_list.html", context)
 
 
+@login_required
 def UsersList(request):
     users = UserFollows.objects.all()
     current_user = request.user
@@ -29,7 +34,7 @@ def UsersList(request):
     return render(request, "management/users_list.html", context)
 
 
-class CreateTicketView(CreateView):
+class CreateTicketView(LoginRequiredMixin, CreateView):
     model = Ticket
     form_class = TicketForm
     template_name = "management/tickets/ticket_create.html"
@@ -57,7 +62,7 @@ class CreateTicketView(CreateView):
         return super().form_valid(form)
 
 
-class EditTicketView(UpdateView):
+class EditTicketView(LoginRequiredMixin, UpdateView):
     model = Ticket
     form_class = TicketForm
     template_name = "management/tickets/ticket_edit.html"
@@ -86,7 +91,7 @@ class EditTicketView(UpdateView):
     #     return kwargs
 
 
-class DeleteTicketView(DeleteView):
+class DeleteTicketView(LoginRequiredMixin, DeleteView):
     template_name = "management/tickets/ticket_delete.html"
     model = Ticket
 
@@ -95,7 +100,7 @@ class DeleteTicketView(DeleteView):
         return reverse_lazy("index")
 
 
-class CreateReviewView(CreateView):
+class CreateReviewView(LoginRequiredMixin, CreateView):
     model = Review
     form_class = ReviewForm
     template_name = "management/reviews/review_create.html"
@@ -127,7 +132,7 @@ class CreateReviewView(CreateView):
         return context
 
 
-class EditReviewView(UpdateView):
+class EditReviewView(LoginRequiredMixin, UpdateView):
     model = Review
     form_class = ReviewForm
     template_name = "management/reviews/review_edit.html"
@@ -150,7 +155,7 @@ class EditReviewView(UpdateView):
         return reverse_lazy("reviews_list")
 
 
-class DeleteReviewView(DeleteView):
+class DeleteReviewView(LoginRequiredMixin, DeleteView):
     template_name = "management/reviews/review_delete.html"
     model = Review
 
@@ -159,7 +164,7 @@ class DeleteReviewView(DeleteView):
         return reverse_lazy("reviews_list")
 
 
-class CreateTicketAndReviewView(TemplateView):
+class CreateTicketAndReviewView(LoginRequiredMixin, TemplateView):
 
     # Initalize our two forms here with separate prefixes
     template_name = "management/reviews/create_ticket_and_review.html"
@@ -189,7 +194,7 @@ class CreateTicketAndReviewView(TemplateView):
         return {"form": form, "sub_form": sub_form}
 
 
-class DeleteUserFollowView(DeleteView):
+class DeleteUserFollowView(LoginRequiredMixin, DeleteView):
     template_name = "management/user_follow_delete.html"
     model = UserFollows
 
