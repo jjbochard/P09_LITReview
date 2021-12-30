@@ -32,7 +32,7 @@ urlpatterns = [
         name="ticket_delete",
     ),
     path(
-        "review/create/<int:pk>",
+        "review/create/<int:pk>/",
         CreateReviewView.as_view(),
         name="review_create",
     ),
@@ -48,12 +48,12 @@ urlpatterns = [
         name="review_delete",
     ),
     path(
-        "ticket_review/create",
+        "ticket_review/create/",
         CreateTicketAndReviewView.as_view(),
         name="create_ticket_review",
     ),
     path(
-        "users/list",
+        "users/list/",
         UsersList,
         name="users_list",
     ),
