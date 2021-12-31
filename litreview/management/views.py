@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
@@ -62,10 +62,13 @@ class CreateTicketView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class EditTicketView(LoginRequiredMixin, UpdateView):
+class EditTicketView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Ticket
     form_class = TicketForm
     template_name = "management/tickets/ticket_edit.html"
+
+    def test_func(self):
+        return self.get_object().user == self.request.user
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -91,9 +94,12 @@ class EditTicketView(LoginRequiredMixin, UpdateView):
     #     return kwargs
 
 
-class DeleteTicketView(LoginRequiredMixin, DeleteView):
+class DeleteTicketView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     template_name = "management/tickets/ticket_delete.html"
     model = Ticket
+
+    def test_func(self):
+        return self.get_object().user == self.request.user
 
     def get_success_url(self):
 
@@ -132,10 +138,13 @@ class CreateReviewView(LoginRequiredMixin, CreateView):
         return context
 
 
-class EditReviewView(LoginRequiredMixin, UpdateView):
+class EditReviewView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Review
     form_class = ReviewForm
     template_name = "management/reviews/review_edit.html"
+
+    def test_func(self):
+        return self.get_object().user == self.request.user
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -155,9 +164,12 @@ class EditReviewView(LoginRequiredMixin, UpdateView):
         return reverse_lazy("reviews_list")
 
 
-class DeleteReviewView(LoginRequiredMixin, DeleteView):
+class DeleteReviewView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     template_name = "management/reviews/review_delete.html"
     model = Review
+
+    def test_func(self):
+        return self.get_object().user == self.request.user
 
     def get_success_url(self):
 
@@ -194,9 +206,12 @@ class CreateTicketAndReviewView(LoginRequiredMixin, TemplateView):
         return {"form": form, "sub_form": sub_form}
 
 
-class DeleteUserFollowView(LoginRequiredMixin, DeleteView):
+class DeleteUserFollowView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     template_name = "management/user_follow_delete.html"
     model = UserFollows
+
+    def test_func(self):
+        return self.get_object().user == self.request.user
 
     def get_success_url(self):
         return reverse_lazy("users_list")
