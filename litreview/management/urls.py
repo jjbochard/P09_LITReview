@@ -11,6 +11,7 @@ from .views import (
     EditTicketView,
     feed,
     subscriptions_list,
+    user_posts,
 )
 
 urlpatterns = [
@@ -58,6 +59,11 @@ urlpatterns = [
         "feed/",
         feed,
         name="feed",
+    ),
+    path(
+        "my-posts/",
+        user_posts,
+        name="user_posts",
     ),
     path(
         "subscription/delete/<int:pk>/",

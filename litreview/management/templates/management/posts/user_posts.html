@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+
+{% block bootstrap5_content %}
+<div class="container">
+    <h1>{% block title %}(no title){% endblock %}</h1>
+
+    {% for post in posts %}
+    {% if post.content_type == 'TICKET' %}
+    {{ post.time_created }}<br>
+    {{ post.title }}<br>
+    {{ post.description }}<br>
+    {{ post.user }}<br>
+    {{ post.image }}<br>
+
+    {% elif post.content_type == 'REVIEW' %}
+    {{ post.time_created }}<br>
+    {{ post.headline }}<br>
+    {{ post.rating }}<br>
+    {{ post.body }}<br>
+    {{ post.user }}<br>
+    {{ post.ticket }}<br><br>
+    {% else %}
+    <p>No posts are available.</p>
+    {% endif %}
+    {% endfor %}
+    {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
+
+    {% block content %}(no content){% endblock %}
+</div>
+
+{% endblock %}

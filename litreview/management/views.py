@@ -36,6 +36,22 @@ def feed(request):
 
 
 @login_required
+def user_posts(request):
+    reviews = Review.objects.filter(user=request.user)
+    reviews = reviews.annotate(content_type=Value("REVIEW", CharField()))
+
+    # get tickets make by them
+    tickets = Ticket.objects.filter(user=request.user)
+    tickets = tickets.annotate(content_type=Value("TICKET", CharField()))
+
+    # Put together and sort their reviews and tickets
+    posts = sorted(
+        chain(reviews, tickets), key=lambda post: post.time_created, reverse=True
+    )
+    return render(request, "management/posts/user_posts.html", context={"posts": posts})
+
+
+@login_required
 def subscriptions_list(request):
     user_follows = UserFollows.objects.all()
     current_user = request.user
