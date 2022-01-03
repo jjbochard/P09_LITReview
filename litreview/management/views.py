@@ -14,10 +14,10 @@ from .models import Review, Ticket, UserFollows
 
 @login_required
 def feed(request):
-    # Get users whos followed request.user
-    followed_users = UserFollows.objects.filter(followed_user=request.user)
-    # Get user_id for them
-    followed_users_id = [users.user_id for users in followed_users]
+    # Get users request.user follows
+    followed_users = UserFollows.objects.filter(user=request.user)
+    # Get id for them
+    followed_users_id = [user.followed_user_id for user in followed_users]
     # Add current user in this list
     followed_users_id.append(request.user.id)
     # Get reviews make by them
