@@ -9,13 +9,11 @@ from .views import (
     DeleteUserFollowView,
     EditReviewView,
     EditTicketView,
-    ReviewList,
-    UsersList,
-    index,
+    feed,
+    subscriptions_list,
 )
 
 urlpatterns = [
-    path("", index, name="index"),
     path(
         "ticket/create/",
         CreateTicketView.as_view(),
@@ -36,7 +34,6 @@ urlpatterns = [
         CreateReviewView.as_view(),
         name="review_create",
     ),
-    path("reviews/list/", ReviewList, name="reviews_list"),
     path(
         "review/edit/<int:pk>/",
         EditReviewView.as_view(),
@@ -53,13 +50,18 @@ urlpatterns = [
         name="create_ticket_review",
     ),
     path(
-        "users/list/",
-        UsersList,
-        name="users_list",
+        "subscriptions/",
+        subscriptions_list,
+        name="subscriptions",
     ),
     path(
-        "user/follow/<int:pk>/",
+        "feed/",
+        feed,
+        name="feed",
+    ),
+    path(
+        "subscription/delete/<int:pk>/",
         DeleteUserFollowView.as_view(),
-        name="userfollows_delete",
+        name="subscription_delete",
     ),
 ]

@@ -13,7 +13,7 @@
 
     <div class="row">
         <div class="col-sm-12" style="margin-bottom: 10px">
-            <a class="btn btn-secondary" role="button" href="{% url 'index' %}">
+            <a class="btn btn-secondary" role="button" href="{% url 'subscription_list' %}">
                 <i class="fa fa-arrow-left"></i>
                 Retour
             </a>
@@ -22,11 +22,11 @@
     <div class="row">
         <div class="col-sm-10">
             <div class="card">
-                <div class="card-header"> Supprimer l'utilisateur {{ userfollows.id }}.
+                <div class="card-header"> Supprimer l'utilisateur {{ userfollows.followed_user }}.
                 </div>
                 <div class="card-body">
                     <form action="" method="post">
-                        Confirmez-vous la suppression de l'utilisateur {{ userfollows.xid }} ?
+                        Confirmez-vous la suppression de votre abonnement à {{ userfollows.followed_user }} ?
                         {% csrf_token %}
                         <div class="card-footer submit">
                             <input type="submit" name="save" value="Valider"

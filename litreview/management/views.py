@@ -1,5 +1,8 @@
+from itertools import chain
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import CharField, Value
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
@@ -10,35 +13,44 @@ from .models import Review, Ticket, UserFollows
 
 
 @login_required
-def index(request):
-    tickets = Ticket.objects.all()
-    context = {"tickets": tickets}
-    return render(request, "management/tickets/tickets_list.html", context)
+def feed(request):
+    # Get users whos followed request.user
+    followed_users = UserFollows.objects.filter(followed_user=request.user)
+    # Get user_id for them
+    followed_users_id = [users.user_id for users in followed_users]
+    # Add current user in this list
+    followed_users_id.append(request.user.id)
+    # Get reviews make by them
+    reviews = Review.objects.filter(user__in=followed_users_id)
+    reviews = reviews.annotate(content_type=Value("REVIEW", CharField()))
+
+    # get tickets make by them
+    tickets = Ticket.objects.filter(user__in=followed_users_id)
+    tickets = tickets.annotate(content_type=Value("TICKET", CharField()))
+
+    # Put together and sort their reviews and tickets
+    posts = sorted(
+        chain(reviews, tickets), key=lambda post: post.time_created, reverse=True
+    )
+    return render(request, "management/posts/feed.html", context={"posts": posts})
 
 
 @login_required
-def ReviewList(request):
-    reviews = Review.objects.all()
-    context = {"reviews": reviews}
-    return render(request, "management/reviews/reviews_list.html", context)
-
-
-@login_required
-def UsersList(request):
-    users = UserFollows.objects.all()
+def subscriptions_list(request):
+    user_follows = UserFollows.objects.all()
     current_user = request.user
     context = {
-        "users": users,
+        "user_follows": user_follows,
         "current_user": current_user,
     }
-    return render(request, "management/users_list.html", context)
+    return render(request, "management/subscriptions_list.html", context)
 
 
 class CreateTicketView(LoginRequiredMixin, CreateView):
     model = Ticket
     form_class = TicketForm
     template_name = "management/tickets/ticket_create.html"
-    success_url = reverse_lazy("index")
+    success_url = reverse_lazy("feed")
 
     def post(self, request):
         form = TicketForm(request.POST, request.FILES)
@@ -50,12 +62,6 @@ class CreateTicketView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return self.success_url
-
-    # def get_form_kwargs(self):
-    #     kwargs = super().get_form_kwargs()
-    #     kwargs.update({"user": self.request.user.id})
-    #     print(kwargs)
-    #     return kwargs
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -85,13 +91,7 @@ class EditTicketView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse_lazy("index")
-
-    # def get_form_kwargs(self):
-    #     kwargs = super().get_form_kwargs()
-    #     kwargs.update({"user": self.request.user.id})
-    #     print(kwargs)
-    #     return kwargs
+        return reverse_lazy("feed")
 
 
 class DeleteTicketView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -103,7 +103,7 @@ class DeleteTicketView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
 
-        return reverse_lazy("index")
+        return reverse_lazy("feed")
 
 
 class CreateReviewView(LoginRequiredMixin, CreateView):
@@ -207,11 +207,11 @@ class CreateTicketAndReviewView(LoginRequiredMixin, TemplateView):
 
 
 class DeleteUserFollowView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    template_name = "management/user_follow_delete.html"
+    template_name = "management/subscription_delete.html"
     model = UserFollows
 
     def test_func(self):
         return self.get_object().user == self.request.user
 
     def get_success_url(self):
-        return reverse_lazy("users_list")
+        return reverse_lazy("subscriptions")

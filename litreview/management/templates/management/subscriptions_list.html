@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+
+{% block bootstrap5_content %}
+<div class="container">
+    <h1>{% block title %}(no title){% endblock %}</h1>
+
+    {% if user_follows %}
+    <p>Abonnements</p>
+    {% for user_follow in user_follows %}
+    {% if user_follow.user == current_user %}
+    {{ user_follow.followed_user }}<br>
+    <a href="{% url 'subscription_delete' pk=user_follow.id %}" class=" btn btn-secondary">Se désabonner</a><br>
+    {% endif %}
+    {% endfor %}
+    <p>Abonnés</p>
+    {% for user_follow in user_follows %}
+    {% if user_follow.followed_user == current_user %}
+    {{ user_follow.user }}<br>
+
+    {% endif %}
+    {% endfor %}
+    {% else %}
+    <p>No users are available.</p>
+    {% endif %}
+    {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
+
+    {% block content %}(no content){% endblock %}
+</div>
+
+{% endblock %}
