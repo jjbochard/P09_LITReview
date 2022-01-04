@@ -5,17 +5,36 @@
     <span class="alert-text">Votre login et votre mot de passe ne fonctionnent pas.</span>
 </div>
 {% endif %}
-<div class="card-body px-lg-5 py-lg-5">
-    <form role="form" method="post" action="{% url 'login' %}">
-        {% csrf_token %}
-        <input type="text" placeholder="Login" class="form-control" id="id_username" name="username" required autofocus>
+
+<div class="container-md vh-100">
+    <div class="d-flex flex-column min-vh-100 justify-content-center align-items-center">
+        <div class="col-10 ">
+            <div class="card">
+                <div class="card-header d-grid gap-2 d-md-flex justify-content-center">
+                    Connectez-vous
+                </div>
+                <div class="card-body">
+                    <form role="form" method="post" action="{% url 'login' %}">
+                        {% csrf_token %}
+                        <div class="form-row mb-3">
+                            <input type="text" placeholder="Nom d'utilisateur" class="form-control" id="id_username"
+                                name="username" required autofocus>
+                        </div>
+                        <div class="form-row mb-3">
+                            <input type="password" placeholder="Mot de passe" class="form-control" id="id_password"
+                                name="password" required>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary mb-3">Se connecter</button>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-center">
+                            <p>Vous n'avez pas de compte? <a href="{% url 'signup' %}">Inscrivez-vous</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="card-body px-lg-5 py-lg-5">
-    <input type="password" placeholder="Mot de passe" class="form-control" id="id_password" name="password" required>
-</div>
-<div class="text-center">
-    <input type="submit" class="btn btn-primary my-4" value="Connexion">
-</div>
-</form>
-</div>
+
 {% endblock %}

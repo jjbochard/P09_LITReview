@@ -1,0 +1,38 @@
+{% extends "registration/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block bootstrap5_content %}
+<div class="container-md vh-100">
+    <div class="d-flex flex-column min-vh-100 justify-content-center align-items-center">
+        <div class="col-10 ">
+            <div class="card">
+                <div class="card-header d-grid gap-2 d-md-flex justify-content-center">
+                    Inscrivez-vous
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="form-row mb-3">
+                                {{ form.username|as_crispy_field}}
+                            </div>
+                            <div class="form-row mb-3">
+                                {{ form.password1|as_crispy_field}}
+                            </div>
+                            <div class="form-row mb-3">
+                                {{ form.password2|as_crispy_field}}
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary mb-3">S'inscrire</button>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-center">
+                            <p>Vous avez déjà un compte? <a href="{% url 'login' %}">Connectez-vous</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
