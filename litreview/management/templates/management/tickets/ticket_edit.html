@@ -2,12 +2,12 @@
 {% load crispy_forms_tags %}
 
 {% block bootstrap5_content %}
-<div class="container-md vh-100">
+<div class="container-md mb-5">
     <div class="d-grid gap-2 d-md-flex mt-5 justify-content-center">
         <div class="col-10">
             <div class="card">
                 <div class="card-header d-grid gap-2 d-md-flex justify-content-center">
-                    Éditer un ticket
+                    Modifier votre ticket
                 </div>
                 <div class="card-body">
                     <form action="" method="post" class="" enctype="multipart/form-data">
@@ -15,7 +15,7 @@
                         {{ form|crispy }}
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <button type="submit" class="btn btn-primary">Valider</button>
-                            <a class="btn btn-secondary" role="button" href="{% url 'feed' %}">
+                            <a class="btn btn-secondary" role="button" href="{% url 'user_posts' %}">
                                 Retour
                             </a>
                         </div>

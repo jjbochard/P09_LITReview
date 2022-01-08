@@ -126,7 +126,7 @@ class CreateReviewView(LoginRequiredMixin, CreateView):
     model = Review
     form_class = ReviewForm
     template_name = "management/reviews/review_create.html"
-    success_url = reverse_lazy("reviews_list")
+    success_url = reverse_lazy("feed")
 
     def post(self, request, *args, **kwargs):
         form = ReviewForm(request.POST)
@@ -177,7 +177,7 @@ class EditReviewView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse_lazy("reviews_list")
+        return reverse_lazy("user_posts")
 
 
 class DeleteReviewView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -198,7 +198,7 @@ class CreateTicketAndReviewView(LoginRequiredMixin, TemplateView):
     template_name = "management/reviews/create_ticket_and_review.html"
 
     def get_success_url(self):
-        return reverse_lazy("reviews_list")
+        return reverse_lazy("feed")
 
     def post(self, request, *args, **kwargs):
         form = TicketForm(request.POST, request.FILES, prefix="ticket")

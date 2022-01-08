@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -128,16 +129,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = "static/"
-# fotoblog/settings.py
+STATIC_URL = "/static/"
 
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+
+MEDIA_ROOT = BASE_DIR
+MEDIA_URL = "/"
 LOGIN_REDIRECT_URL = "feed"
 LOGOUT_REDIRECT_URL = "login"
 
 # MEDIA
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-MEDIA_ROOT = "litreview/media"
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 
 

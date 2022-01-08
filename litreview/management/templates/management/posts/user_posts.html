@@ -11,7 +11,9 @@
     {{ post.title }}<br>
     {{ post.description }}<br>
     {{ post.user }}<br>
-    {{ post.image }}<br>
+    {% if post.image%}
+    <img width=200 src="{{ post.image.url }}" alt="{{ post.title }}"><br>
+    {%endif%}
 
     {% elif post.content_type == 'REVIEW' %}
     {{ post.time_created }}<br>
