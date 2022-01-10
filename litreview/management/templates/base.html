@@ -31,8 +31,14 @@
     {% include "navigation.html" %}
     {% block bootstrap5_before_content %}
     {% endblock %}
-    {% block bootstrap5_content %} CONTENT {% endblock %}
-    {% block bootstrap5_after_content %}{% endblock %}
+    <div class="container-md mb-5">
+        <div class="d-grid gap-2 d-md-flex mt-5 justify-content-center">
+            <div class="col-10">
+                {% block bootstrap5_content %} CONTENT {% endblock %}
+                {% block bootstrap5_after_content %}{% endblock %}
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap JavaScript if it is in body -->
     {% if not 'javascript_in_head'|bootstrap_setting %}

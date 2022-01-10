@@ -1,0 +1,10 @@
+{% load bootstrap5 %}
+
+<div class="d-grid gap-2 d-md-flex mb-3 justify-content-md-end">
+    <a class="btn btn-info" role="button" href="{% url 'review_edit' pk=post.id %}">
+        Modifier
+    </a>
+    <a class="btn btn-danger" role="button" href="{% url 'review_delete' pk=post.id %}">
+        Supprimer
+    </a>
+</div>

@@ -32,7 +32,11 @@ def feed(request):
     posts = sorted(
         chain(reviews, tickets), key=lambda post: post.time_created, reverse=True
     )
-    return render(request, "management/posts/feed.html", context={"posts": posts})
+    return render(
+        request,
+        "management/feed/feed.html",
+        context={"feed_posts": posts, "current_user": request.user.id},
+    )
 
 
 @login_required
@@ -48,7 +52,9 @@ def user_posts(request):
     posts = sorted(
         chain(reviews, tickets), key=lambda post: post.time_created, reverse=True
     )
-    return render(request, "management/posts/user_posts.html", context={"posts": posts})
+    return render(
+        request, "management/user_posts/user_posts.html", context={"user_posts": posts}
+    )
 
 
 @login_required
@@ -107,7 +113,7 @@ class EditTicketView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse_lazy("feed")
+        return reverse_lazy("user_posts")
 
 
 class DeleteTicketView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -119,7 +125,7 @@ class DeleteTicketView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
 
-        return reverse_lazy("feed")
+        return reverse_lazy("user_posts")
 
 
 class CreateReviewView(LoginRequiredMixin, CreateView):
@@ -189,7 +195,7 @@ class DeleteReviewView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
 
-        return reverse_lazy("reviews_list")
+        return reverse_lazy("user_posts")
 
 
 class CreateTicketAndReviewView(LoginRequiredMixin, TemplateView):

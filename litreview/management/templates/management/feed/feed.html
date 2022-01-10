@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+
+{% block bootstrap5_content %}
+<div class="container">
+    <div class="d-grid gap-2 d-md-flex mb-3 justify-content-center">
+        <a href="{% url  'ticket_create' %}" class="btn btn-warning">Créer un ticket</a>
+        <a href="{% url  'create_ticket_review' %}" class="btn btn-info">Créer une critique</a><br>
+    </div>
+    {% for post in feed_posts %}
+    {% if post.content_type == 'TICKET' %}
+    {% if post.user.id != current_user %}
+    {% include 'management/snippets/ticket_snippet.html' %}
+    {% endif %}
+    {% elif post.content_type == 'REVIEW' %}
+    {% include 'management/snippets/review_snippet.html' %}
+    {% else %}
+    <p>No posts are available.</p>
+    {% endif %}
+    {% endfor %}
+    {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
+    {% endblock %}
+</div>

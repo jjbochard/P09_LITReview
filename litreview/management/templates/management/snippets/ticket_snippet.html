@@ -1,0 +1,30 @@
+{% load bootstrap5 %}
+<div class="card border-warning mb-2">
+    <div class="card-body pb-0">
+        <div class="row mb-3">
+            <div class="col">
+                <p class="card-text">{{ post.user }} a posté un ticket</p>
+            </div>
+            <div class="col d-grid gap-2 d-md-flex justify-content-md-end">
+                <p class="card-text">{{ post.time_created|date:"H:i, j F Y" }}</p>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <p class="card-text">{{ post.title }}</p>
+        </div>
+        {% if post.description %}
+        <div class="row mb-3">
+            <p class="card-text">{{ post.description }}</p>
+        </div>
+        {% endif %}
+        {% if post.image %}
+        <p class="card-img"><img width=200 src="{{ post.image.url }}" alt="{{ post.title }}"><br>
+        </p>
+        {% endif %}
+        {% if user_posts %}
+        {% include 'management/user_posts/snippets/user_posts_button_ticket_snippet.html' %}
+        {% else %}
+        {% include 'management/feed/snippets/feed_button_ticket_snippet.html' %}
+        {%endif%}
+    </div>
+</div>
