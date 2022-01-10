@@ -2,30 +2,54 @@
 {% load bootstrap5 %}
 
 {% block bootstrap5_content %}
-<div class="container">
-    <h1>{% block title %}(no title){% endblock %}</h1>
 
-    {% if user_follows %}
-    <p>Abonnements</p>
-    {% for user_follow in user_follows %}
-    {% if user_follow.user == current_user %}
-    {{ user_follow.followed_user }}<br>
-    <a href="{% url 'subscription_delete' pk=user_follow.id %}" class=" btn btn-secondary">Se désabonner</a><br>
-    {% endif %}
-    {% endfor %}
-    <p>Abonnés</p>
-    {% for user_follow in user_follows %}
-    {% if user_follow.followed_user == current_user %}
-    {{ user_follow.user }}<br>
-
-    {% endif %}
-    {% endfor %}
-    {% else %}
-    <p>No users are available.</p>
-    {% endif %}
-    {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
-
-    {% block content %}(no content){% endblock %}
+{% if user_follows %}
+<div class="card mb-5">
+    <div class="card-header d-flex justify-content-center">
+        Abonnements
+    </div>
+    <div class="card-body pb-0 pt-0">
+        <ul class="list-group list-group-flush">
+            {% for user_follow in user_follows %}
+            {% if user_follow.user == current_user %}
+            <li class="list-group-item">
+                <div class="row d-flex align-items-center">
+                    <div class="col">
+                        <p class="card-text">{{ user_follow.followed_user }}</p>
+                    </div>
+                    <div class="col d-grid gap-2 d-md-flex justify-content-md-end">
+                        <p class="card-text"><a href="{% url 'subscription_delete' pk=user_follow.id %}"
+                                class=" btn btn-danger btn-sm">Se
+                                désabonner</a></p>
+                    </div>
+                </div>
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
 </div>
+<div class="card mb-2">
+    <div class="card-header d-flex justify-content-center">
+        Abonnés
+    </div>
+    <div class="card-body pb-0 pt-0">
+        <ul class="list-group list-group-flush">
+            {% for user_follow in user_follows %}
+            {% if user_follow.followed_user == current_user %}
+            <li class="list-group-item">
+                <div class="row pt-1 pb-1 d-flex align-items-center">
+                    <p class="card-text">{{ user_follow.user }}</p>
+                </div>
 
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% else %}
+<p>No users are available.</p>
+{% endif %}
+{% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
 {% endblock %}
