@@ -4,7 +4,8 @@ from crispy_forms.layout import Div, Layout
 from django import forms
 from django.forms import ModelForm
 
-from .models import Review, Ticket
+from .models import Review, Ticket, UserFollows
+from django.utils.translation import gettext_lazy as _
 
 
 class TicketForm(ModelForm):
@@ -40,3 +41,13 @@ class ReviewForm(ModelForm):
             Div(InlineRadios("rating")),
             "body",
         )
+
+
+class UserFollowForm(ModelForm):
+    class Meta:
+        model = UserFollows
+        fields = ["followed_user"]
+
+        labels = {
+            "followed_user": _("Sélectionner un utilisateur"),
+        }

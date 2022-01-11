@@ -1,8 +1,23 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
 {% load bootstrap5 %}
 
 {% block bootstrap5_content %}
-
+<div class="card mb-5">
+    <div class="card-header d-grid gap-2 d-md-flex justify-content-center">
+        Suivre un utilisateur
+    </div>
+    <div class="card-body">
+        <form action="" method="post" class="">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="submit" class="btn btn-primary">Suivre</button>
+            </div>
+        </form>
+    </div>
+</div>
 {% if user_follows %}
 <div class="card mb-5">
     <div class="card-header d-flex justify-content-center">

@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from .forms import ReviewForm, TicketForm
+from .forms import ReviewForm, TicketForm, UserFollowForm
 from .models import Review, Ticket, UserFollows
 
 
@@ -57,15 +57,32 @@ def user_posts(request):
     )
 
 
-@login_required
-def subscriptions_list(request):
-    user_follows = UserFollows.objects.all()
-    current_user = request.user
-    context = {
-        "user_follows": user_follows,
-        "current_user": current_user,
-    }
-    return render(request, "management/subscriptions_list.html", context)
+class CreateUserFollowsView(LoginRequiredMixin, TemplateView):
+
+    template_name = "management/subscriptions_list.html"
+
+    def get_success_url(self):
+        return reverse_lazy("subscriptions")
+
+    def post(self, request, *args, **kwargs):
+        form = UserFollowForm(request.POST)
+        form.instance.user = self.request.user
+        if form.is_valid():
+            form.instance.user = self.request.user
+            form.save()
+
+        return redirect(self.get_success_url())
+
+    def get_context_data(self, **kwargs):
+        form = UserFollowForm
+        user_follows = UserFollows.objects.all()
+        current_user = self.request.user
+        context = {
+            "form": form,
+            "user_follows": user_follows,
+            "current_user": current_user,
+        }
+        return context
 
 
 class CreateTicketView(LoginRequiredMixin, CreateView):

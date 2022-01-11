@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views import (
+    CreateUserFollowsView,
     CreateReviewView,
     CreateTicketAndReviewView,
     CreateTicketView,
@@ -10,7 +11,6 @@ from .views import (
     EditReviewView,
     EditTicketView,
     feed,
-    subscriptions_list,
     user_posts,
 )
 
@@ -52,7 +52,7 @@ urlpatterns = [
     ),
     path(
         "subscriptions/",
-        subscriptions_list,
+        CreateUserFollowsView.as_view(),
         name="subscriptions",
     ),
     path(
