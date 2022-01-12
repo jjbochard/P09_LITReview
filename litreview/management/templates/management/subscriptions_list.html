@@ -2,8 +2,19 @@
 {% load crispy_forms_tags %}
 
 {% load bootstrap5 %}
-
 {% block bootstrap5_content %}
+{% if messages %}
+<div class="alert alert-warning" role="alert">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+        class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+        <path
+            d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+    </svg>
+    {% for message in messages %}
+    <span class="alert-text">{{message}}</span>
+    {% endfor %}
+</div>
+{% endif %}
 <div class="card mb-5">
     <div class="card-header d-grid gap-2 d-md-flex justify-content-center">
         Suivre un utilisateur
@@ -18,22 +29,28 @@
         </form>
     </div>
 </div>
-{% if user_follows %}
 <div class="card mb-5">
     <div class="card-header d-flex justify-content-center">
         Abonnements
     </div>
     <div class="card-body pb-0 pt-0">
         <ul class="list-group list-group-flush">
-            {% for user_follow in user_follows %}
-            {% if user_follow.user == current_user %}
+            {% if not followed_users %}
+            <li class="list-group-item">
+                <div class="row pt-1 pb-1 d-flex align-items-center">
+                    <p class="card-text d-flex align-items-center">Vous ne suivez personne :(</p>
+                </div>
+            </li>
+            {% else %}
+            {% for user in followed_users %}
+            {% if user.user == current_user %}
             <li class="list-group-item">
                 <div class="row d-flex align-items-center">
                     <div class="col">
-                        <p class="card-text">{{ user_follow.followed_user }}</p>
+                        <p class="card-text">{{ user.followed_user }}</p>
                     </div>
                     <div class="col d-grid gap-2 d-md-flex justify-content-md-end">
-                        <p class="card-text"><a href="{% url 'subscription_delete' pk=user_follow.id %}"
+                        <p class="card-text"><a href="{% url 'subscription_delete' pk=user.id %}"
                                 class=" btn btn-danger btn-sm">Se
                                 désabonner</a></p>
                     </div>
@@ -41,30 +58,36 @@
             </li>
             {% endif %}
             {% endfor %}
+            {% endif %}
         </ul>
     </div>
 </div>
+
 <div class="card mb-2">
     <div class="card-header d-flex justify-content-center">
         Abonnés
     </div>
     <div class="card-body pb-0 pt-0">
         <ul class="list-group list-group-flush">
-            {% for user_follow in user_follows %}
-            {% if user_follow.followed_user == current_user %}
+            {% if not following_users %}
             <li class="list-group-item">
                 <div class="row pt-1 pb-1 d-flex align-items-center">
-                    <p class="card-text">{{ user_follow.user }}</p>
+                    <p class="card-text d-flex align-items-center">Personne ne vous suit :(</p>
+                </div>
+            </li>
+            {% else %}
+            {% for user in following_users %}
+            {% if user.followed_user == current_user %}
+            <li class="list-group-item">
+                <div class="row pt-1 pb-1 d-flex align-items-center">
+                    <p class="card-text">{{ user.user }}</p>
                 </div>
 
+                {% endif %}
+                {% endfor %}
+                {% endif %}
             </li>
-            {% endif %}
-            {% endfor %}
         </ul>
     </div>
 </div>
-{% else %}
-<p>No users are available.</p>
-{% endif %}
-{% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
 {% endblock %}

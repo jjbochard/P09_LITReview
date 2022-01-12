@@ -1,7 +1,9 @@
 from itertools import chain
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db import IntegrityError
 from django.db.models import CharField, Value
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -68,8 +70,12 @@ class CreateUserFollowsView(LoginRequiredMixin, TemplateView):
         form = UserFollowForm(request.POST)
         form.instance.user = self.request.user
         if form.is_valid():
-            form.instance.user = self.request.user
-            form.save()
+            try:
+                form.save()
+            except IntegrityError:
+                messages.add_message(
+                    request, messages.INFO, "Vous suivez déjà cet utilisateur."
+                )
 
         return redirect(self.get_success_url())
 
@@ -77,12 +83,22 @@ class CreateUserFollowsView(LoginRequiredMixin, TemplateView):
         form = UserFollowForm
         user_follows = UserFollows.objects.all()
         current_user = self.request.user
-        context = {
+        following_users = sorted(
+            user_follows,
+            key=lambda user: user.user.username,
+            reverse=False,
+        )
+        followed_users = sorted(
+            user_follows,
+            key=lambda user: user.followed_user.username,
+            reverse=False,
+        )
+        return {
             "form": form,
-            "user_follows": user_follows,
+            "followed_users": followed_users,
+            "following_users": following_users,
             "current_user": current_user,
         }
-        return context
 
 
 class CreateTicketView(LoginRequiredMixin, CreateView):

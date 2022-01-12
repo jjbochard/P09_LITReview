@@ -3,9 +3,9 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Layout
 from django import forms
 from django.forms import ModelForm
+from users.models import User
 
 from .models import Review, Ticket, UserFollows
-from django.utils.translation import gettext_lazy as _
 
 
 class TicketForm(ModelForm):
@@ -44,10 +44,11 @@ class ReviewForm(ModelForm):
 
 
 class UserFollowForm(ModelForm):
+    followed_user = forms.ModelChoiceField(
+        queryset=User.objects.order_by("username"),
+        label="Sélectionner un utilisateur",
+    )
+
     class Meta:
         model = UserFollows
         fields = ["followed_user"]
-
-        labels = {
-            "followed_user": _("Sélectionner un utilisateur"),
-        }
