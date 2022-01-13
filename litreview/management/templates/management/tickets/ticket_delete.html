@@ -1,40 +1,25 @@
 {% extends "base.html" %}
-
-{% block bootstrap5_before_content %}
-<div class="header bg-default pt-4 pb-4">
-    <div class="container-fluid">
-        <h1 class="text-white text-center">Suppression d'un ticket</h1>
-    </div>
-</div>
-{% endblock bootstrap5_before_content%}
-
 {% block bootstrap5_content %}
-<div class="container-fluid pt-2">
 
-    <div class="row">
-        <div class="col-sm-12" style="margin-bottom: 10px">
-            <a class="btn btn-secondary" role="button" href="">
-                <i class="fa fa-arrow-left"></i>
-                Retour
-            </a>
-        </div>
+<div class="card mb-5">
+    <div class="card-header">
+        Suppression du ticket : {{ ticket.title }}
     </div>
-    <div class="row">
-        <div class="col-sm-10">
-            <div class="card">
-                <div class="card-header"> Supprimer le ticket {{ ticket.id }}.
+    <div class="card-body">
+        <form action="" method="post">
+            <div class="row d-flex align-items-center">
+                <div class="col">
+                    Confirmez-vous la suppression de ce ticket?
+                    {% csrf_token %}
                 </div>
-                <div class="card-body">
-                    <form action="" method="post">
-                        Confirmez-vous la suppression du ticket {{ ticket.id }} ?
-                        {% csrf_token %}
-                        <div class="card-footer submit">
-                            <input type="submit" name="save" value="Valider"
-                                class="btn btn-primary btn-primary btn-wd btn-fill">
-                        </div>
-                    </form>
+                <div class="col d-grid gap-2 d-md-flex justify-content-md-end">
+                    <input type="submit" name="save" value="Valider" class="btn btn-primary btn-wd btn-fill">
+                    <a class="btn btn-secondary btn-wd btn-fill" role="button" href="{% url 'user_posts' %}">
+                        Retour
+                    </a>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
-    {% endblock %}
+</div>
+{% endblock %}
