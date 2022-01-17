@@ -2,18 +2,21 @@
 
 <div class="card mb-2">
     <div class="card-body pb-0">
+        {% if post.ticket.user == request.user %}
+        <div class="row mb-3">
+            <p class="card-text">Ticket - Vous</p>
+        </div>
+        {% else %}
         <div class="row mb-3">
             <p class="card-text">Ticket - {{ post.ticket.user }}</p>
         </div>
+        {% endif %}
         <div class="row mb-3">
             <p class="card-text">{{ post.ticket.title }}</p>
         </div>
         {% if post.ticket.image %}
         <p class="card-img"><img width=200 src="{{ post.ticket.image.url }}" alt="{{ post.title }}"><br>
         </p>
-        {% endif %}
-        {% if feed_posts %}
-        {% include 'management/feed/snippets/feed_button_review_snippet.html' %}
         {% endif %}
     </div>
 </div>

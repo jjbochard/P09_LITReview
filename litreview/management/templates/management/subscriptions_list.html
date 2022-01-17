@@ -35,13 +35,6 @@
     </div>
     <div class="card-body pb-0 pt-0">
         <ul class="list-group list-group-flush">
-            {% if not followed_users %}
-            <li class="list-group-item">
-                <div class="row pt-1 pb-1 d-flex align-items-center">
-                    <p class="card-text d-flex align-items-center">Vous ne suivez personne :(</p>
-                </div>
-            </li>
-            {% else %}
             {% for user in followed_users %}
             {% if user.user == current_user %}
             <li class="list-group-item">
@@ -58,7 +51,6 @@
             </li>
             {% endif %}
             {% endfor %}
-            {% endif %}
         </ul>
     </div>
 </div>
@@ -69,23 +61,14 @@
     </div>
     <div class="card-body pb-0 pt-0">
         <ul class="list-group list-group-flush">
-            {% if not following_users %}
-            <li class="list-group-item">
-                <div class="row pt-1 pb-1 d-flex align-items-center">
-                    <p class="card-text d-flex align-items-center">Personne ne vous suit :(</p>
-                </div>
-            </li>
-            {% else %}
             {% for user in following_users %}
             {% if user.followed_user == current_user %}
             <li class="list-group-item">
                 <div class="row pt-1 pb-1 d-flex align-items-center">
                     <p class="card-text">{{ user.user }}</p>
                 </div>
-
                 {% endif %}
                 {% endfor %}
-                {% endif %}
             </li>
         </ul>
     </div>

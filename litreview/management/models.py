@@ -9,13 +9,18 @@ class Ticket(models.Model):
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     image = models.ImageField(null=True, blank=True, upload_to="static/media/image")
     time_created = models.DateTimeField(auto_now_add=True)
+    got_review = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
 
 
 class Review(models.Model):
-    ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE)
+    ticket = models.OneToOneField(
+        Ticket,
+        on_delete=models.CASCADE,
+        primary_key=False,
+    )
     rating = models.PositiveSmallIntegerField(
         # validates that rating must be between 0 and 5
         validators=[MinValueValidator(0), MaxValueValidator(5)],

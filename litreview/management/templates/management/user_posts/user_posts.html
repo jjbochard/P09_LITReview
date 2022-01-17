@@ -3,15 +3,16 @@
 
 {% block bootstrap5_content %}
 <div class="container">
+    {% if user_posts %}
     {% for post in user_posts %}
     {% if post.content_type == 'TICKET' %}
     {% include 'management/snippets/ticket_snippet.html' %}
     {% elif post.content_type == 'REVIEW' %}
     {% include 'management/snippets/review_snippet.html' %}
-    {% else %}
-    <p>No posts are available.</p>
     {% endif %}
     {% endfor %}
-    {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
+    {% else %}
+    <p>Vous n'avez pas encore de publié de ticket ni de critique</p>
+    {% endif %}
     {% endblock %}
 </div>

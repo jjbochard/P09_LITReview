@@ -23,21 +23,39 @@ def feed(request):
     # Add current user in this list
     followed_users_id.append(request.user.id)
     # Get reviews make by them
-    reviews = Review.objects.filter(user__in=followed_users_id)
-    reviews = reviews.annotate(content_type=Value("REVIEW", CharField()))
+    reviews_followed_users = Review.objects.filter(user__in=followed_users_id)
+    reviews_followed_users = reviews_followed_users.annotate(
+        content_type=Value("REVIEW", CharField())
+    )
 
     # get tickets make by them
-    tickets = Ticket.objects.filter(user__in=followed_users_id)
-    tickets = tickets.annotate(content_type=Value("TICKET", CharField()))
+    tickets_followed_users = Ticket.objects.filter(user__in=followed_users_id)
+    tickets_followed_users = tickets_followed_users.annotate(
+        content_type=Value("TICKET", CharField())
+    )
 
+    # get users whos follow request.user
+    following_users = UserFollows.objects.filter(followed_user=request.user)
+    # Get id for them
+    following_users_id = [user.user_id for user in following_users]
+
+    reviews_following_users = Review.objects.filter(user_id__in=following_users_id)
+    reviews_following_users = reviews_following_users.annotate(
+        content_type=Value("REVIEW", CharField())
+    )
     # Put together and sort their reviews and tickets
     posts = sorted(
-        chain(reviews, tickets), key=lambda post: post.time_created, reverse=True
+        chain(reviews_followed_users, tickets_followed_users, reviews_following_users),
+        key=lambda post: post.time_created,
+        reverse=True,
     )
     return render(
         request,
         "management/feed/feed.html",
-        context={"feed_posts": posts, "current_user": request.user.id},
+        context={
+            "feed_posts": posts,
+            "current_user": request.user.id,
+        },
     )
 
 
@@ -181,6 +199,8 @@ class CreateReviewView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         ticket = Ticket.objects.get(pk=self.kwargs["pk"])
+        ticket.got_review = True
+        ticket.save()
         review = form.save(commit=False)
         review.ticket = ticket
         review.save()
