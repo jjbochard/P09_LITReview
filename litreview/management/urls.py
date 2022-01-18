@@ -1,6 +1,8 @@
 from django.urls import path
 
 from .views import (
+    FeedView,
+    UserPostsView,
     CreateUserFollowsView,
     CreateReviewView,
     CreateTicketAndReviewView,
@@ -10,11 +12,16 @@ from .views import (
     DeleteUserFollowView,
     EditReviewView,
     EditTicketView,
-    feed,
-    user_posts,
 )
 
 urlpatterns = [
+    path("", FeedView.as_view(), name="feed"),
+    path(
+        "my-posts/",
+        UserPostsView.as_view(),
+        name="user_posts",
+    ),
+
     path(
         "ticket/create/",
         CreateTicketView.as_view(),
@@ -54,16 +61,6 @@ urlpatterns = [
         "subscriptions/",
         CreateUserFollowsView.as_view(),
         name="subscriptions",
-    ),
-    path(
-        "feed/",
-        feed,
-        name="feed",
-    ),
-    path(
-        "my-posts/",
-        user_posts,
-        name="user_posts",
     ),
     path(
         "subscription/delete/<int:pk>/",

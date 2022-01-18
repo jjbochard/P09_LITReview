@@ -14,67 +14,72 @@ from .forms import ReviewForm, TicketForm, UserFollowForm
 from .models import Review, Ticket, UserFollows
 
 
-@login_required
-def feed(request):
-    # Get users request.user follows
-    followed_users = UserFollows.objects.filter(user=request.user)
-    # Get id for them
-    followed_users_id = [user.followed_user_id for user in followed_users]
-    # Add current user in this list
-    followed_users_id.append(request.user.id)
-    # Get reviews make by them
-    reviews_followed_users = Review.objects.filter(user__in=followed_users_id)
-    reviews_followed_users = reviews_followed_users.annotate(
-        content_type=Value("REVIEW", CharField())
-    )
+class FeedView(LoginRequiredMixin, TemplateView):
 
-    # get tickets make by them
-    tickets_followed_users = Ticket.objects.filter(user__in=followed_users_id)
-    tickets_followed_users = tickets_followed_users.annotate(
-        content_type=Value("TICKET", CharField())
-    )
+    template_name = "management/feed/feed.html"
 
-    # get users whos follow request.user
-    following_users = UserFollows.objects.filter(followed_user=request.user)
-    # Get id for them
-    following_users_id = [user.user_id for user in following_users]
+    def get_success_url(self):
+        return reverse_lazy("feed")
 
-    reviews_following_users = Review.objects.filter(user_id__in=following_users_id)
-    reviews_following_users = reviews_following_users.annotate(
-        content_type=Value("REVIEW", CharField())
-    )
-    # Put together and sort their reviews and tickets
-    posts = sorted(
-        chain(reviews_followed_users, tickets_followed_users, reviews_following_users),
-        key=lambda post: post.time_created,
-        reverse=True,
-    )
-    return render(
-        request,
-        "management/feed/feed.html",
-        context={
+    def get_context_data(self, **kwargs):
+        # Get users request.user follows
+        followed_users = UserFollows.objects.filter(user=self.request.user)
+        # Get id for them
+        followed_users_id = [user.followed_user_id for user in followed_users]
+        # Add current user in this list
+        followed_users_id.append(self.request.user.id)
+        # Get reviews make by them
+        reviews_followed_users = Review.objects.filter(user__in=followed_users_id)
+        reviews_followed_users = reviews_followed_users.annotate(
+            content_type=Value("REVIEW", CharField())
+        )
+
+        # get tickets make by them
+        tickets_followed_users = Ticket.objects.filter(user__in=followed_users_id)
+        tickets_followed_users = tickets_followed_users.annotate(
+            content_type=Value("TICKET", CharField())
+        )
+
+        # get users whos follow request.user
+        following_users = UserFollows.objects.filter(followed_user=self.request.user)
+        # Get id for them
+        following_users_id = [user.user_id for user in following_users]
+
+        reviews_following_users = Review.objects.filter(user_id__in=following_users_id)
+        reviews_following_users = reviews_following_users.annotate(
+            content_type=Value("REVIEW", CharField())
+        )
+        # Put together and sort their reviews and tickets
+        posts = sorted(
+            chain(reviews_followed_users, tickets_followed_users, reviews_following_users),
+            key=lambda post: post.time_created,
+            reverse=True,
+        )
+        return {
             "feed_posts": posts,
-            "current_user": request.user.id,
-        },
-    )
+            "current_user": self.request.user.id,
+        }
 
 
-@login_required
-def user_posts(request):
-    reviews = Review.objects.filter(user=request.user)
-    reviews = reviews.annotate(content_type=Value("REVIEW", CharField()))
+class UserPostsView(LoginRequiredMixin, TemplateView):
+    template_name = "management/user_posts/user_posts.html"
 
-    # get tickets make by them
-    tickets = Ticket.objects.filter(user=request.user)
-    tickets = tickets.annotate(content_type=Value("TICKET", CharField()))
+    def get_success_url(self):
+        return reverse_lazy("user_posts")
 
-    # Put together and sort their reviews and tickets
-    posts = sorted(
-        chain(reviews, tickets), key=lambda post: post.time_created, reverse=True
-    )
-    return render(
-        request, "management/user_posts/user_posts.html", context={"user_posts": posts}
-    )
+    def get_context_data(self, **kwargs):
+        reviews = Review.objects.filter(user=self.request.user)
+        reviews = reviews.annotate(content_type=Value("REVIEW", CharField()))
+
+        # get tickets make by them
+        tickets = Ticket.objects.filter(user=self.request.user)
+        tickets = tickets.annotate(content_type=Value("TICKET", CharField()))
+
+        # Put together and sort their reviews and tickets
+        posts = sorted(
+            chain(reviews, tickets), key=lambda post: post.time_created, reverse=True
+        )
+        return {"user_posts": posts}
 
 
 class CreateUserFollowsView(LoginRequiredMixin, TemplateView):
