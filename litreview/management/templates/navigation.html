@@ -1,25 +1,25 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand">Litreview</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url  'feed' %}">Flux</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="{% url 'user_posts' %}">Mes posts</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url  'subscriptions' %}">Abonnements</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url  'logout' %}">Déconnexion</a>
-                </li>
-            </ul>
-        </div>
+{% load static%}
+<nav class="navbar navbar-light position-relative navbar-expand bg-light">
+    <a class="navbar-brand position-absolute top-50 start-50 translate-middle">Litreview
+        <img src='static/assets/litreview.png' alt="" width="24" height="30"></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url  'feed' %}">Flux</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'user_posts' %}">Mes posts</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url  'subscriptions' %}">Abonnements</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url  'logout' %}">Déconnexion</a>
+            </li>
+        </ul>
     </div>
 </nav>
