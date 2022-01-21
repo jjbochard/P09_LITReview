@@ -1,11 +1,10 @@
 from itertools import chain
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db import IntegrityError
-from django.db.models import CharField, Value
-from django.shortcuts import redirect, render
+from django.db.models import CharField, Q, Value
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
@@ -22,36 +21,43 @@ class FeedView(LoginRequiredMixin, TemplateView):
         return reverse_lazy("feed")
 
     def get_context_data(self, **kwargs):
-        # Get users request.user follows
-        followed_users = UserFollows.objects.filter(user=self.request.user)
-        # Get id for them
-        followed_users_id = [user.followed_user_id for user in followed_users]
-        # Add current user in this list
-        followed_users_id.append(self.request.user.id)
-        # Get reviews make by them
-        reviews_followed_users = Review.objects.filter(user__in=followed_users_id)
-        reviews_followed_users = reviews_followed_users.annotate(
-            content_type=Value("REVIEW", CharField())
+        # Get users.id request.user follows
+        followed_users_id = UserFollows.objects.filter(
+            user=self.request.user
+        ).values_list("followed_user_id", flat=True)
+
+        # Get reviews make by them and annotate
+        reviews_followed_users = (
+            Review.objects.filter(
+                Q(user__in=followed_users_id) | Q(user=self.request.user.id)
+            ).select_related()
+        ).annotate(content_type=Value("REVIEW", CharField()))
+
+        # Get tickets make by them and annotate
+        tickets_followed_users = (
+            Ticket.objects.filter(
+                Q(user__in=followed_users_id) | Q(user=self.request.user.id)
+            ).select_related()
+        ).annotate(content_type=Value("TICKET", CharField()))
+
+        # get users.id whos follow request.user
+        following_users_id = UserFollows.objects.filter(
+            followed_user=self.request.user
+        ).values_list("user_id", flat=True)
+        # Get reviews make by them for request.user tickets and annotate
+        reviews_following_users = (
+            Review.objects.filter(
+                Q(user__in=following_users_id) & Q(ticket__user=self.request.user.id)
+            )
+            .select_related()
+            .annotate(content_type=Value("REVIEW", CharField()))
         )
 
-        # get tickets make by them
-        tickets_followed_users = Ticket.objects.filter(user__in=followed_users_id)
-        tickets_followed_users = tickets_followed_users.annotate(
-            content_type=Value("TICKET", CharField())
-        )
-
-        # get users whos follow request.user
-        following_users = UserFollows.objects.filter(followed_user=self.request.user)
-        # Get id for them
-        following_users_id = [user.user_id for user in following_users]
-
-        reviews_following_users = Review.objects.filter(user_id__in=following_users_id)
-        reviews_following_users = reviews_following_users.annotate(
-            content_type=Value("REVIEW", CharField())
-        )
         # Put together and sort their reviews and tickets
         posts = sorted(
-            chain(reviews_followed_users, tickets_followed_users, reviews_following_users),
+            chain(
+                reviews_followed_users, tickets_followed_users, reviews_following_users
+            ),
             key=lambda post: post.time_created,
             reverse=True,
         )
@@ -68,12 +74,18 @@ class UserPostsView(LoginRequiredMixin, TemplateView):
         return reverse_lazy("user_posts")
 
     def get_context_data(self, **kwargs):
-        reviews = Review.objects.filter(user=self.request.user)
-        reviews = reviews.annotate(content_type=Value("REVIEW", CharField()))
+        reviews = (
+            Review.objects.filter(user=self.request.user)
+            .select_related()
+            .annotate(content_type=Value("REVIEW", CharField()))
+        )
 
         # get tickets make by them
-        tickets = Ticket.objects.filter(user=self.request.user)
-        tickets = tickets.annotate(content_type=Value("TICKET", CharField()))
+        tickets = (
+            Ticket.objects.filter(user=self.request.user)
+            .select_related()
+            .annotate(content_type=Value("TICKET", CharField()))
+        )
 
         # Put together and sort their reviews and tickets
         posts = sorted(
@@ -104,7 +116,7 @@ class CreateUserFollowsView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         form = UserFollowForm
-        user_follows = UserFollows.objects.all()
+        user_follows = UserFollows.objects.all().select_related()
         current_user = self.request.user
         following_users = sorted(
             user_follows,
