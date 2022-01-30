@@ -17,9 +17,6 @@ class FeedView(LoginRequiredMixin, TemplateView):
 
     template_name = "management/feed/feed.html"
 
-    def get_success_url(self):
-        return reverse_lazy("feed")
-
     def get_context_data(self, **kwargs):
         # Get users.id request.user follows
         followed_users_id = UserFollows.objects.filter(
@@ -69,9 +66,6 @@ class FeedView(LoginRequiredMixin, TemplateView):
 
 class UserPostsView(LoginRequiredMixin, TemplateView):
     template_name = "management/user_posts/user_posts.html"
-
-    def get_success_url(self):
-        return reverse_lazy("user_posts")
 
     def get_context_data(self, **kwargs):
         reviews = (
@@ -140,7 +134,6 @@ class CreateTicketView(LoginRequiredMixin, CreateView):
     model = Ticket
     form_class = TicketForm
     template_name = "management/tickets/ticket_create.html"
-    success_url = reverse_lazy("feed")
 
     def post(self, request):
         form = TicketForm(request.POST, request.FILES)
@@ -150,12 +143,12 @@ class CreateTicketView(LoginRequiredMixin, CreateView):
 
         return self.form_invalid(form)
 
-    def get_success_url(self):
-        return self.success_url
-
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("feed")
 
 
 class EditTicketView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -175,11 +168,6 @@ class EditTicketView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
         return self.form_invalid(form)
 
-    def form_valid(self, form):
-        ticket = form.save(commit=False)
-        ticket.save()
-        return redirect(self.get_success_url())
-
     def get_success_url(self):
         return reverse_lazy("user_posts")
 
@@ -192,7 +180,6 @@ class DeleteTicketView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.get_object().user == self.request.user
 
     def get_success_url(self):
-
         return reverse_lazy("user_posts")
 
 
@@ -200,7 +187,6 @@ class CreateReviewView(LoginRequiredMixin, CreateView):
     model = Review
     form_class = ReviewForm
     template_name = "management/reviews/review_create.html"
-    success_url = reverse_lazy("feed")
 
     def post(self, request, *args, **kwargs):
         form = ReviewForm(request.POST)
@@ -211,7 +197,7 @@ class CreateReviewView(LoginRequiredMixin, CreateView):
         return self.form_invalid(form)
 
     def get_success_url(self):
-        return self.success_url
+        return reverse_lazy("feed")
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -221,12 +207,12 @@ class CreateReviewView(LoginRequiredMixin, CreateView):
         review = form.save(commit=False)
         review.ticket = ticket
         review.save()
-        return redirect(self.get_success_url())
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["ticket"] = Ticket.objects.get(pk=self.kwargs["pk"])
+        context["ticket"] = Ticket.objects.select_related().get(pk=self.kwargs["pk"])
         return context
 
 
@@ -247,11 +233,6 @@ class EditReviewView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
         return self.form_invalid(form)
 
-    def form_valid(self, form):
-        review = form.save(commit=False)
-        review.save()
-        return redirect(self.get_success_url())
-
     def get_success_url(self):
         return reverse_lazy("user_posts")
 
@@ -264,7 +245,6 @@ class DeleteReviewView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.get_object().user == self.request.user
 
     def get_success_url(self):
-
         return reverse_lazy("user_posts")
 
 
@@ -272,9 +252,6 @@ class CreateTicketAndReviewView(LoginRequiredMixin, TemplateView):
 
     # Initalize our two forms here with separate prefixes
     template_name = "management/reviews/create_ticket_and_review.html"
-
-    def get_success_url(self):
-        return reverse_lazy("feed")
 
     def post(self, request, *args, **kwargs):
         form = TicketForm(request.POST, request.FILES, prefix="ticket")

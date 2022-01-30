@@ -1,17 +1,17 @@
 from django.urls import path
 
 from .views import (
-    FeedView,
-    UserPostsView,
-    CreateUserFollowsView,
     CreateReviewView,
     CreateTicketAndReviewView,
     CreateTicketView,
+    CreateUserFollowsView,
     DeleteReviewView,
     DeleteTicketView,
     DeleteUserFollowView,
     EditReviewView,
     EditTicketView,
+    FeedView,
+    UserPostsView,
 )
 
 urlpatterns = [
@@ -21,7 +21,6 @@ urlpatterns = [
         UserPostsView.as_view(),
         name="user_posts",
     ),
-
     path(
         "ticket/create/",
         CreateTicketView.as_view(),
