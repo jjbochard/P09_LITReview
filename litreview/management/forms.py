@@ -44,11 +44,16 @@ class ReviewForm(ModelForm):
 
 
 class UserFollowForm(ModelForm):
-    followed_user = forms.ModelChoiceField(
-        queryset=User.objects.order_by("username"),
-        label="Sélectionner un utilisateur",
-    )
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        super(UserFollowForm, self).__init__(*args, **kwargs)
+        self.fields["followed_user"].queryset = User.objects.exclude(username=self.user)
 
     class Meta:
         model = UserFollows
         fields = ["followed_user"]
+
+    followed_user = forms.ModelChoiceField(
+        queryset=None,
+        label="Sélectionner un utilisateur",
+    )

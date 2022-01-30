@@ -94,15 +94,21 @@ class UserPostsView(LoginRequiredMixin, TemplateView):
         return {"user_posts": posts}
 
 
-class CreateUserFollowsView(LoginRequiredMixin, TemplateView):
-
+class CreateUserFollowsView(LoginRequiredMixin, CreateView):
+    model = UserFollows
+    form_class = UserFollowForm
     template_name = "management/subscriptions_list.html"
 
     def get_success_url(self):
         return reverse_lazy("subscriptions")
 
-    def post(self, request, *args, **kwargs):
-        form = UserFollowForm(request.POST)
+    def get_form_kwargs(self):
+        kwargs = super(CreateUserFollowsView, self).get_form_kwargs()
+        kwargs.update({"user": self.request.user})
+        return kwargs
+
+    def post(self, request):
+        form = UserFollowForm(user=self.request.user, data=request.POST)
         form.instance.user = self.request.user
         if form.is_valid():
             try:
@@ -111,29 +117,23 @@ class CreateUserFollowsView(LoginRequiredMixin, TemplateView):
                 messages.add_message(
                     request, messages.INFO, "Vous suivez déjà cet utilisateur."
                 )
-
         return redirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
-        form = UserFollowForm
+        context = super().get_context_data(**kwargs)
         user_follows = UserFollows.objects.all().select_related()
-        current_user = self.request.user
-        following_users = sorted(
+        context["current_user"] = self.request.user
+        context["following_users"] = sorted(
             user_follows,
             key=lambda user: user.user.username,
             reverse=False,
         )
-        followed_users = sorted(
+        context["followed_users"] = sorted(
             user_follows,
             key=lambda user: user.followed_user.username,
             reverse=False,
         )
-        return {
-            "form": form,
-            "followed_users": followed_users,
-            "following_users": following_users,
-            "current_user": current_user,
-        }
+        return context
 
 
 class CreateTicketView(LoginRequiredMixin, CreateView):
