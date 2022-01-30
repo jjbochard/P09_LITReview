@@ -6,7 +6,37 @@
     <div class="card-header d-grid gap-2 d-md-flex justify-content-center">
         Créer une critique
     </div>
+
+
     <div class="card-body">
+        <div class="card mb-2">
+            <div class="card-body">
+                <div class="row mb-3">
+                    <p class="card-text">Vous êtes entrain de répondre au ticket suivant :</p>
+                </div>
+                <div class="card mb-2">
+                    <div class="card-body pb-0">
+                        {% if ticket.user == request.user %}
+                        <div class="row mb-3">
+                            <p class="card-text">Ticket - Vous</p>
+                        </div>
+                        {% else %}
+                        <div class="row mb-3">
+                            <p class="card-text">Ticket - {{ ticket.user }}</p>
+                        </div>
+                        {% endif %}
+                        <div class="row mb-3">
+                            <p class="card-text">{{ ticket.title }}</p>
+                        </div>
+                        {% if ticket.image %}
+                        <p class="card-img"><img width=200 src="{{ ticket.image.url }}" alt="{{ ticket.title }}"><br>
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <form action="" method="post">
             {% csrf_token %}
             <div class="form-content">
