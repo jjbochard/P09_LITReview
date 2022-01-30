@@ -16,18 +16,28 @@
                 </div>
                 <div class="card mb-2">
                     <div class="card-body pb-0">
-                        {% if ticket.user == request.user %}
                         <div class="row mb-3">
-                            <p class="card-text">Ticket - Vous</p>
+                            {% if ticket.user == request.user %}
+                            <div class="col">
+                                <p class="card-text">Ticket - Vous</p>
+                            </div>
+                            {% else %}
+                            <div class="col">
+                                <p class="card-text">Ticket - {{ ticket.user }}</p>
+                            </div>
+                            {% endif %}
+                            <div class="col d-grid gap-2 d-md-flex justify-content-md-end">
+                                <p class="card-text">{{ ticket.time_created|date:"H:i, j F Y" }}</p>
+                            </div>
                         </div>
-                        {% else %}
-                        <div class="row mb-3">
-                            <p class="card-text">Ticket - {{ ticket.user }}</p>
-                        </div>
-                        {% endif %}
                         <div class="row mb-3">
                             <p class="card-text">{{ ticket.title }}</p>
                         </div>
+                        {% if ticket.description %}
+                        <div class="row mb-3">
+                            <p class="card-text">{{ ticket.description }}</p>
+                        </div>
+                        {% endif %}
                         {% if ticket.image %}
                         <p class="card-img"><img width=200 src="{{ ticket.image.url }}" alt="{{ ticket.title }}"><br>
                         </p>
