@@ -51,9 +51,14 @@ class FeedView(LoginRequiredMixin, TemplateView):
         )
 
         # Put together and sort their reviews and tickets
+        # Use set to not have duplicate reviews or tickets
         posts = sorted(
-            chain(
-                reviews_followed_users, tickets_followed_users, reviews_following_users
+            set(
+                chain(
+                    reviews_followed_users,
+                    tickets_followed_users,
+                    reviews_following_users,
+                )
             ),
             key=lambda post: post.time_created,
             reverse=True,
@@ -244,6 +249,14 @@ class DeleteReviewView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         return self.get_object().user == self.request.user
 
+    def form_valid(self, form):
+        review = Review.objects.get(pk=self.kwargs["pk"])
+        ticket_review = review.ticket.id
+        ticket = Ticket.objects.get(pk=ticket_review)
+        ticket.got_review = False
+        ticket.save()
+        return super().form_valid(form)
+
     def get_success_url(self):
         return reverse_lazy("user_posts")
 
@@ -275,6 +288,9 @@ class CreateTicketAndReviewView(LoginRequiredMixin, TemplateView):
         sub_form = ReviewForm(prefix="review")
 
         return {"form": form, "sub_form": sub_form}
+
+    def get_success_url(self):
+        return reverse_lazy("feed")
 
 
 class DeleteUserFollowView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
