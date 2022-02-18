@@ -1,4 +1,5 @@
 {% load bootstrap5 %}
+{% load mathfilters %}
 <div class="card border-info mb-2">
     <div class="card-body pb-0">
         <div class="row mb-3">
@@ -16,7 +17,30 @@
             </div>
         </div>
         <div class="row mb-3">
-            <p class="card-text">{{ post.headline }} - {{ post.rating }}</p>
+            <div class=d-inline>
+                <p class="card-text">{{ post.headline }} -
+                    {%with rest_rate=5|sub:post.rating%}
+                    {% if post.rating == 0 %}
+                    {% for i in "x"|ljust:"5" %}
+                    <i class="bi bi-star"></i>
+                    {%endfor%}
+                    {% elif post.rating == 5 %}
+                    {% for i in "x"|ljust:"5" %}
+                    <i class="bi bi-star-fill"></i>
+                    {%endfor%}
+                    {% else %}
+                    {% for i in "x"|ljust:post.rating %}
+                    <i class="bi bi-star-fill"></i>
+                    {%endfor%}
+                    {% for i in "x"|rjust:rest_rate %}
+                    {%if rest_rate != 0%}
+                    <i class="bi bi-star"></i>
+                    {%endif%}
+                    {%endfor%}
+                    {%endif%}
+                    {%endwith%}
+                </p>
+            </div>
         </div>
         {% if post.body %}
         <div class="row mb-3">

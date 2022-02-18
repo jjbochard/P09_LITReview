@@ -4,14 +4,14 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 {% endif %}
+{% load static %}
 <html lang="{{ LANGUAGE_CODE|default:'en_us' }}">
 
 <head>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <!-- Page title -->
     <title>{% block bootstrap5_title %}Litreview{% endblock %}</title>
 
@@ -39,14 +39,12 @@
             </div>
         </div>
     </div>
-
     <!-- Bootstrap JavaScript if it is in body -->
     {% if not 'javascript_in_head'|bootstrap_setting %}
     {% bootstrap_javascript %}
     {% endif %}
 
     {% block bootstrap5_extra_script %}{% endblock %}
-
 </body>
 
 </html>
