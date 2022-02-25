@@ -1,0 +1,79 @@
+[
+    {
+        "model": "management.ticket",
+        "pk": 1,
+        "fields": {
+            "title": "1984",
+            "description": "Je suis à la recherche d'un avis sur ce livre",
+            "user": "1",
+            "time_created": "2022-01-16 17:12:03.021268",
+            "got_review": "False"
+        }
+    },
+    {
+        "model": "management.ticket",
+        "pk": 2,
+        "fields": {
+            "title": "Les raisins de la colère",
+            "description": "Ce livre est-il bien?",
+            "user": "2",
+            "time_created": "2022-01-16 17:13:03.021268",
+            "got_review": "True"
+        }
+    },
+    {
+        "model": "management.review",
+        "fields": {
+            "ticket_id": "2",
+            "rating": 5,
+            "user": "3",
+            "time_created": "2022-01-16 17:14:03.021268",
+            "headline": "Excellent",
+            "body": "Une excellent lecture, je vous le recommande vivement"
+        }
+    },
+    {
+        "model": "management.ticket",
+        "pk": 3,
+        "fields": {
+            "title": "Cyrano de Bergerac",
+            "description": "J'aimerais un avis",
+            "user": "1",
+            "time_created": "2022-01-16 17:34:03.021268",
+            "got_review": "True"
+        }
+    },
+    {
+        "model": "management.review",
+        "fields": {
+            "ticket_id": "3",
+            "rating": 4,
+            "user": "3",
+            "time_created": "2022-01-16 10:34",
+            "headline": "Très bonne lecture",
+            "body": ""
+        }
+    },
+    {
+        "model": "management.ticket",
+        "pk": 4,
+        "fields": {
+            "title": "Des souris et des Hommes",
+            "description": "Me conseillez-vous ce livre",
+            "user": "2",
+            "time_created": "2022-01-16 17:06:03.021268",
+            "got_review": "True"
+        }
+    },
+    {
+        "model": "management.review",
+        "fields": {
+            "ticket_id": "4",
+            "rating": 4,
+            "user": "1",
+            "time_created": "2022-01-16 18:34",
+            "headline": "Oui, c'est un excellent livre",
+            "body": ""
+        }
+    }
+]

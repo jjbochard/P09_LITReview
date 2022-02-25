@@ -1,0 +1,44 @@
+[
+    {
+        "model": "users.user",
+        "pk": 2,
+        "fields": {
+            "username": "nathalie23"
+        }
+    },
+    {
+        "model": "users.user",
+        "pk": 3,
+        "fields": {
+            "username": "xavier31"
+        }
+    },
+    {
+        "model": "users.user",
+        "pk": 4,
+        "fields": {
+            "username": "elodie34"
+        }
+    },
+    {
+        "model": "management.userfollows",
+        "fields": {
+            "user": "2",
+            "followed_user": "1"
+        }
+    },
+    {
+        "model": "management.userfollows",
+        "fields": {
+            "user": "3",
+            "followed_user": "1"
+        }
+    },
+    {
+        "model": "management.userfollows",
+        "fields": {
+            "user": "1",
+            "followed_user": "2"
+        }
+    }
+]

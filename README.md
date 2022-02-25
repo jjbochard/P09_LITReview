@@ -61,7 +61,6 @@ Then, create a superuser in order to be able to connect you to the application a
 
     django litreview/manage.py createsuperuser
 
-If you don't need to use Django admin, you can create an account later
 
 Finally, start the web application
 
@@ -80,6 +79,22 @@ You can install the configured pre commit hook with
 
 Open your favorite browser and go to [localhost:8000](http://localhost:8000/)
 
+On the main page, a user can see all posts related to him :
+* his tickets and reviews
+* reviews and tickets of the users he follows
+* reviews of his tickets made by users even if he doesn't follow them
+
+
+A user can also create a ticket and create in one form a ticket and a review
+![Main page](litreview/media/image/posts.png)
+
+On the page of his posts, a user can see only his posts and can modify or delete them
+![Main page](litreview/media/image/my-posts.png)
+
+On the subscription page, a user can see all the users he follows and all the users who follow him.
+He can also subscribe/unsubscribe to a user
+![Main page](litreview/media/image/subscriptions.png)
+
 ## Possible improvements
 
-* This html page is made of basic html language. To have a better visualization, I should use Bootstrap or an equivalent
+* Bootstrap vizalisation
